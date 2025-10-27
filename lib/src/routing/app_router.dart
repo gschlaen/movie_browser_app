@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:movie_browser_app/src/common/presentation/widgets/scaffold_with_nav_bar.dart';
 import 'package:movie_browser_app/src/features/movies/domain/entities/movie.dart';
 import 'package:movie_browser_app/src/features/movies/presentation/home_screen.dart';
-import 'package:movie_browser_app/src/features/movies/presentation/screens/movie_detail_screen.dart';
+import 'package:movie_browser_app/src/features/movies/presentation/movie_detail_screen.dart';
 
 enum AppRoute {
   home('home', '/'),
@@ -18,7 +18,6 @@ enum AppRoute {
 }
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
-final _shellNavigatorAKey = GlobalKey<NavigatorState>();
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(

@@ -18,6 +18,20 @@ class MovieRepository {
       (json) => Movie.fromJson(json as Map<String, dynamic>),
     );
   }
+
+  Future<PaginatedResponse<Movie>> searchMovies({
+    required String query,
+    int page = 1,
+  }) async {
+    final response = await _apiClient.get(
+      'search/movie',
+      queryParameters: {'query': query, 'page': page.toString()},
+    );
+    return PaginatedResponse.fromJson(
+      response,
+      (json) => Movie.fromJson(json as Map<String, dynamic>),
+    );
+  }
 }
 
 final movieRepositoryProvider = Provider((ref) {
@@ -29,3 +43,12 @@ final popularMoviesProvider = FutureProvider<PaginatedResponse<Movie>>((
 ) async {
   return ref.watch(movieRepositoryProvider).fetchPopularMovies();
 });
+
+final moviesSearchProvider =
+    FutureProvider.family<PaginatedResponse<Movie>, String>((
+      ref,
+      String query,
+    ) async {
+      final movieSearchRepository = ref.watch(movieRepositoryProvider);
+      return movieSearchRepository.searchMovies(query: query, page: 1);
+    });
