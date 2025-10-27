@@ -2,19 +2,22 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movie_browser_app/design_system/foundations.dart';
+import 'package:movie_browser_app/src/common/api/favorites_repository.dart';
 import 'package:movie_browser_app/src/features/movies/data/genre_repository.dart';
 import 'package:movie_browser_app/src/features/movies/domain/entities/movie.dart';
 import 'package:movie_browser_app/src/features/movies/presentation/genre_chip.dart';
 import 'package:movie_browser_app/src/utils/date_formatter.dart';
 import 'package:movie_browser_app/src/utils/vote_count_formatter.dart';
 
-class MovieDetailScreen extends StatelessWidget {
+class MovieDetailScreen extends ConsumerWidget {
   const MovieDetailScreen({super.key, required this.movie});
 
   final Movie movie;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isFavorite = ref.watch(favoriteMovieIdsProvider).contains(movie.id);
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -22,6 +25,16 @@ class MovieDetailScreen extends StatelessWidget {
         centerTitle: true,
         backgroundColor: AppColors.surface,
         foregroundColor: AppColors.onSurface,
+        actions: [
+          IconButton(
+            icon: Icon(isFavorite ? Icons.bookmark : Icons.bookmark_border),
+            onPressed: () {
+              ref
+                  .read(favoriteMovieIdsProvider.notifier)
+                  .toggleFavorite(movie.id);
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(

@@ -31,9 +31,7 @@ class Movie {
       voteAverage: (json['vote_average'] as num).toDouble(),
       voteCount: (json['vote_count'] as num).toDouble(),
       releaseDate: json['release_date'] as String?,
-      genreIds: (json['genre_ids'] as List<dynamic>)
-          .map((e) => e as int)
-          .toList(),
+      genreIds: (json['genre_ids'] as List<dynamic>?)?.map((e) => e as int).toList() ?? [],
     );
   }
 

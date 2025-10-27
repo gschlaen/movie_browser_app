@@ -19,6 +19,24 @@ class MovieRepository {
     );
   }
 
+  Future<Movie> fetchMovieById(int movieId) async {
+    final response = await _apiClient.get('movie/$movieId');
+    return Movie.fromJson(response);
+  }
+
+  Future<List<Movie>> fetchMoviesByIds(List<int> movieIds) async {
+    final movies = <Movie>[];
+    for (final id in movieIds) {
+      try {
+        final movie = await fetchMovieById(id);
+        movies.add(movie);
+      } catch (e) {
+        // Log error or handle it as per application's error handling policy
+      }
+    }
+    return movies;
+  }
+
   Future<PaginatedResponse<Movie>> searchMovies({
     required String query,
     int page = 1,
@@ -43,6 +61,13 @@ final popularMoviesProvider = FutureProvider<PaginatedResponse<Movie>>((
 ) async {
   return ref.watch(movieRepositoryProvider).fetchPopularMovies();
 });
+
+final moviesByIdsProvider = FutureProvider.family<List<Movie>, List<int>>(
+  (ref, movieIds) async {
+    final movieRepository = ref.watch(movieRepositoryProvider);
+    return movieRepository.fetchMoviesByIds(movieIds);
+  },
+);
 
 final moviesSearchProvider =
     FutureProvider.family<PaginatedResponse<Movie>, String>((

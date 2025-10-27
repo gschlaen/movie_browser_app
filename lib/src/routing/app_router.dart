@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:movie_browser_app/src/common/presentation/widgets/scaffold_with_nav_bar.dart';
 import 'package:movie_browser_app/src/features/movies/domain/entities/movie.dart';
+import 'package:movie_browser_app/src/features/movies/presentation/favorites_screen.dart';
 import 'package:movie_browser_app/src/features/movies/presentation/home_screen.dart';
 import 'package:movie_browser_app/src/features/movies/presentation/movie_detail_screen.dart';
 
@@ -57,7 +58,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 path: AppRoute.favorites.path,
                 name: AppRoute.favorites.name,
                 builder: (BuildContext context, GoRouterState state) {
-                  return const Text('Favorites Screen Placeholder');
+                  return const FavoritesScreen();
                 },
               ),
             ],
