@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:movie_browser_app/env/env.dart';
 
@@ -23,3 +24,5 @@ class ApiClient {
     }
   }
 }
+
+final apiClientProvider = Provider((ref) => ApiClient());
