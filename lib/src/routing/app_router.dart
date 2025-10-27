@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:movie_browser_app/src/common/presentation/widgets/scaffold_with_nav_bar.dart';
+import 'package:movie_browser_app/src/features/movies/domain/entities/movie.dart';
 import 'package:movie_browser_app/src/features/movies/presentation/home_screen.dart';
+import 'package:movie_browser_app/src/features/movies/presentation/screens/movie_detail_screen.dart';
 
 enum AppRoute {
   home('home', '/'),
@@ -15,9 +17,13 @@ enum AppRoute {
   final String path;
 }
 
+final _rootNavigatorKey = GlobalKey<NavigatorState>();
+final _shellNavigatorAKey = GlobalKey<NavigatorState>();
+
 final goRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     initialLocation: AppRoute.home.path,
+    navigatorKey: _rootNavigatorKey,
     routes: <RouteBase>[
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
@@ -34,13 +40,12 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 },
                 routes: <RouteBase>[
                   GoRoute(
+                    parentNavigatorKey: _rootNavigatorKey,
                     path: AppRoute.movieDetail.path,
                     name: AppRoute.movieDetail.name,
                     builder: (BuildContext context, GoRouterState state) {
-                      final movieId = state.pathParameters['id'];
-                      return Text(
-                        'Detail Screen Placeholder for movie ID: $movieId',
-                      );
+                      final movie = state.extra as Movie;
+                      return MovieDetailScreen(movie: movie);
                     },
                   ),
                 ],

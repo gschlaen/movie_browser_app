@@ -10,6 +10,8 @@ abstract class BrandColors {
   // Brand Primary
   static const Color red500 = Color(0xFFD93B4A);
 
+  static const Color red800 = Color.fromRGBO(217, 49, 74, 0.18);
+
   // Inactive/disabled
   static const Color light300 = Color.fromARGB(255, 212, 141, 141);
 

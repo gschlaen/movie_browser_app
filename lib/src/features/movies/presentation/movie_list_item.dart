@@ -16,6 +16,7 @@ class MovieListItem extends StatelessWidget {
         GoRouter.of(context).goNamed(
           AppRoute.movieDetail.name,
           pathParameters: {'id': movie.id.toString()},
+          extra: movie,
         );
       },
       child: Card(

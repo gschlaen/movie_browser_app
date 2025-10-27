@@ -29,13 +29,22 @@ abstract class AppColors {
   /// The primary interactive color (e.g., active nav icon).
   static const Color primary = BrandColors.red500;
 
-  /// The color for inactive interactive elements.
-  static const Color inactive = BrandColors.light300;
-
   // Semantic Colors
   /// The color used for star ratings.
   static const Color rating = BrandColors.yellow500;
   static const Color ratingText = BrandColors.yellow300;
+
+  /// The color for inactive interactive elements.
+  static const Color inactive = BrandColors.light300;
+
+  /// The color for chip background.
+  static const Color chipBackground = BrandColors.red800;
+
+  /// The color for chip text.
+  static const Color chipText = BrandColors.red500;
+
+  /// The color for star ratings in MovieDetailScreen.
+  static const Color star = BrandColors.red500;
 }
 
 /// Semantic spacing definitions for layout and components.
@@ -83,6 +92,12 @@ abstract class AppTypography {
   static final TextStyle bodyLarge = _base.copyWith(
     fontSize: BrandFonts.size14,
     fontWeight: BrandFonts.weightRegular,
+  );
+
+  /// For chip text.
+  static final TextStyle labelMedium = _base.copyWith(
+    fontSize: BrandFonts.size14,
+    fontWeight: BrandFonts.weightMedium,
   );
 
   /// For small supporting text (e.g., rating number).
