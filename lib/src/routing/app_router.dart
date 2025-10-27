@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:movie_browser_app/src/common/presentation/widgets/scaffold_with_nav_bar.dart';
+import 'package:movie_browser_app/src/features/movies/presentation/home_screen.dart';
 
 enum AppRoute {
   home('home', '/'),
@@ -29,7 +30,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 path: AppRoute.home.path,
                 name: AppRoute.home.name,
                 builder: (BuildContext context, GoRouterState state) {
-                  return const Text('Home Screen Placeholder');
+                  return const HomeScreen();
                 },
                 routes: <RouteBase>[
                   GoRoute(
@@ -37,7 +38,9 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                     name: AppRoute.movieDetail.name,
                     builder: (BuildContext context, GoRouterState state) {
                       final movieId = state.pathParameters['id'];
-                      return Text('Detail Screen Placeholder for movie ID: $movieId');
+                      return Text(
+                        'Detail Screen Placeholder for movie ID: $movieId',
+                      );
                     },
                   ),
                 ],

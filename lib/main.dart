@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:movie_browser_app/design_system/foundations.dart';
 import 'package:movie_browser_app/src/routing/app_router.dart';
 
 void main() {
@@ -15,8 +16,13 @@ class MainApp extends ConsumerWidget {
     return MaterialApp.router(
       routerConfig: goRouter,
       title: 'Movie Browser',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        brightness: Brightness.dark,
+        primaryColor: AppColors.primary,
+        scaffoldBackgroundColor: AppColors.background,
+        useMaterial3: true,
+        textTheme: Typography.whiteMountainView,
       ),
     );
   }
