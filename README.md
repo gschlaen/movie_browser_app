@@ -4,7 +4,7 @@ This is a Flutter project that showcases a movie browsing application, built wit
 
 ## Features
 
-*   Browse popular movies with infinite scrolling.
+*   Browse popular movies.
 *   Search for movies.
 *   View movie details.
 *   Save Movies Locally (Favorites).
@@ -67,5 +67,5 @@ If I had more time, I would focus on the following enhancements:
 *   **Error Handling:** Implement a more sophisticated error-handling strategy with dedicated error widgets and user-friendly messages.
 *   **Offline Support:** Enhance local caching to not just save favorites, but also cache popular movies to reduce API calls and provide offline support.
 *   **Profile Screen:** Implement the "Profile" screen with user-specific information or settings.
-*   **Search Pagination:** Implement pagination for search results.
+*   **Pagination:** Implement pagination for popular movies and search results.
 *   **Debounce in Movie Search:** Implement a debounce mechanism to the movie search to avoid triggering API calls on every keystroke.
