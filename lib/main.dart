@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movie_browser_app/design_system/foundations.dart';
-import 'package:movie_browser_app/src/common/api/favorites_repository.dart';
+import 'package:movie_browser_app/src/features/favorites/data/favorites_repository.dart';
 import 'package:movie_browser_app/src/routing/app_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

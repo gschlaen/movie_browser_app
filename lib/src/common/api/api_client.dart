@@ -2,9 +2,13 @@ import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
-import 'package:movie_browser_app/env/env.dart';
+
+import '../../../env/env.dart';
 
 class ApiClient {
+  ApiClient({required http.Client client}) : _client = client;
+
+  final http.Client _client;
   static const String _baseUrl = 'https://api.themoviedb.org/3/';
 
   Future<Map<String, dynamic>> get(
@@ -15,7 +19,7 @@ class ApiClient {
       queryParameters: {...?queryParameters, 'api_key': Env.tmdbApiKey},
     );
 
-    final response = await http.get(uri);
+    final response = await _client.get(uri);
 
     if (response.statusCode == 200) {
       return json.decode(response.body) as Map<String, dynamic>;
@@ -25,4 +29,4 @@ class ApiClient {
   }
 }
 
-final apiClientProvider = Provider((ref) => ApiClient());
+final apiClientProvider = Provider((ref) => ApiClient(client: http.Client()));

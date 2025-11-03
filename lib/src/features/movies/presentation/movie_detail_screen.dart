@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movie_browser_app/design_system/foundations.dart';
-import 'package:movie_browser_app/src/common/api/favorites_repository.dart';
+import 'package:movie_browser_app/src/features/favorites/data/favorites_repository.dart';
 import 'package:movie_browser_app/src/features/movies/data/genre_repository.dart';
 import 'package:movie_browser_app/src/features/movies/domain/entities/movie.dart';
 import 'package:movie_browser_app/src/features/movies/presentation/genre_chip.dart';
