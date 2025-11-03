@@ -2,19 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movie_browser_app/design_system/foundations.dart';
 import 'package:movie_browser_app/src/features/movies/data/repositories/movie_repository.dart';
-import 'package:movie_browser_app/src/features/movies/presentation/movie_list.dart';
+import 'package:movie_browser_app/src/features/movies/presentation/empty_movie_search.dart';
+import 'package:movie_browser_app/src/features/movies/presentation/movie_list_item.dart';
+import 'package:movie_browser_app/src/features/movies/presentation/movie_list_tile_error.dart';
+import 'package:movie_browser_app/src/features/movies/presentation/movie_list_tile_shimmer.dart';
 import 'package:movie_browser_app/src/features/search/presentation/movies_search_notifier_provider.dart';
-import 'package:movie_browser_app/src/features/search/presentation/no_results.dart';
 import 'package:movie_browser_app/src/features/search/presentation/search_field.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
+  static const pageSize = 20;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final popularMoviesAsyncValue = ref.watch(popularMoviesProvider);
-    final searchMoviesAsyncValue = ref.watch(moviesSearchResultProvider);
-    final searchQuery = ref.watch(moviesSearchQueryNotifierProvider);
+    final query = ref.watch(moviesSearchQueryNotifierProvider);
+    final searchMoviesAsyncValue = ref.watch(
+      fetchMoviesProvider((page: 1, query: query)),
+    );
+    final totalResults = searchMoviesAsyncValue.value?.totalResults;
 
     return Scaffold(
       appBar: AppBar(
@@ -36,63 +42,46 @@ class HomeScreen extends ConsumerWidget {
                   .update(value),
             ),
             const SizedBox(height: AppSpacing.m),
+            if (totalResults == 0) EmptyMovieSearch(query: query),
+
             Expanded(
-              child: searchQuery.isEmpty
-                  ? popularMoviesAsyncValue.when(
-                      data: (paginatedResponse) {
-                        final movies = paginatedResponse.results;
-                        return MovieList(movies: movies);
-                      },
-                      loading: () =>
-                          const Center(child: CircularProgressIndicator()),
-                      error: (error, stack) => Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Error: ${error.toString()}',
-                              style: AppTypography.bodyLarge,
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: AppSpacing.m),
-                            ElevatedButton(
-                              onPressed: () =>
-                                  ref.invalidate(popularMoviesProvider),
-                              child: const Text('Retry'),
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
-                  : searchMoviesAsyncValue.when(
-                      data: (paginatedResponse) {
-                        final movies = paginatedResponse.results;
-                        if (movies.isEmpty) {
-                          return const NoResults();
-                        }
-                        return MovieList(movies: movies);
-                      },
-                      loading: () =>
-                          const Center(child: CircularProgressIndicator()),
-                      error: (error, stack) => Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Error: ${error.toString()}',
-                              style: AppTypography.bodyLarge,
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: AppSpacing.m),
-                            ElevatedButton(
-                              onPressed: () =>
-                                  ref.invalidate(moviesSearchProvider),
-                              child: const Text('Retry'),
-                            ),
-                          ],
-                        ),
-                      ),
+              child: GridView.builder(
+                key: ValueKey(query),
+                padding: const EdgeInsets.all(AppSpacing.s),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 8.0,
+                  mainAxisSpacing: 8.0,
+                  childAspectRatio: 0.55,
+                ),
+                itemCount: totalResults,
+                itemBuilder: (context, index) {
+                  final page = index ~/ pageSize + 1;
+                  final indexInPage = index % pageSize;
+                  final responseAsync = ref.watch(
+                    // pass both the page and query to the fetchMoviesProvider
+                    fetchMoviesProvider((page: page, query: query)),
+                  );
+                  return responseAsync.when(
+                    data: (data) {
+                      // This condition only happens if a null itemCount is given
+                      if (indexInPage >= data.results.length) {
+                        return null;
+                      }
+
+                      return MovieListItem(movie: data.results[indexInPage]);
+                    },
+                    loading: () => const MovieListTileShimmer(),
+                    error: (err, stack) => MovieListTileError(
+                      query: query,
+                      page: page,
+                      indexInPage: indexInPage,
+                      error: err.toString(),
+                      isLoading: responseAsync.isLoading,
                     ),
+                  );
+                },
+              ),
             ),
           ],
         ),

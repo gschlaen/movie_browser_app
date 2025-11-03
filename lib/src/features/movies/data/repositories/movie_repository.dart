@@ -3,6 +3,9 @@ import 'package:movie_browser_app/src/common/api/api_client.dart';
 import 'package:movie_browser_app/src/common/models/paginated_response.dart';
 import 'package:movie_browser_app/src/features/movies/domain/entities/movie.dart';
 
+/// Metadata used when fetching movies with the paginated search API.
+typedef MoviesQueryData = ({String query, int page});
+
 class MovieRepository {
   final ApiClient _apiClient;
 
@@ -27,23 +30,21 @@ class MovieRepository {
   Future<List<Movie>> fetchMoviesByIds(List<int> movieIds) async {
     final movies = <Movie>[];
     for (final id in movieIds) {
-      try {
-        final movie = await fetchMovieById(id);
-        movies.add(movie);
-      } catch (e) {
-        // Log error or handle it as per application's error handling policy
-      }
+      final movie = await fetchMovieById(id);
+      movies.add(movie);
     }
     return movies;
   }
 
   Future<PaginatedResponse<Movie>> searchMovies({
-    required String query,
-    int page = 1,
+    required MoviesQueryData queryData,
   }) async {
     final response = await _apiClient.get(
       'search/movie',
-      queryParameters: {'query': query, 'page': page.toString()},
+      queryParameters: {
+        'query': queryData.query,
+        'page': queryData.page.toString(),
+      },
     );
     return PaginatedResponse.fromJson(
       response,
@@ -56,24 +57,25 @@ final movieRepositoryProvider = Provider((ref) {
   return MovieRepository(ref.watch(apiClientProvider));
 });
 
-final popularMoviesProvider = FutureProvider<PaginatedResponse<Movie>>((
-  ref,
-) async {
-  return ref.watch(movieRepositoryProvider).fetchPopularMovies();
-});
-
-final moviesByIdsProvider = FutureProvider.family<List<Movie>, List<int>>(
-  (ref, movieIds) async {
-    final movieRepository = ref.watch(movieRepositoryProvider);
-    return movieRepository.fetchMoviesByIds(movieIds);
-  },
-);
-
-final moviesSearchProvider =
-    FutureProvider.family<PaginatedResponse<Movie>, String>((
+final fetchMoviesProvider = FutureProvider.family
+    .autoDispose<PaginatedResponse<Movie>, MoviesQueryData>((
       ref,
-      String query,
+      MoviesQueryData queryData,
     ) async {
-      final movieSearchRepository = ref.watch(movieRepositoryProvider);
-      return movieSearchRepository.searchMovies(query: query, page: 1);
+      final moviesRepo = ref.watch(movieRepositoryProvider);
+      if (queryData.query.isEmpty) {
+        // Non-search endpoint
+        return moviesRepo.fetchPopularMovies(page: queryData.page);
+      } else {
+        // Search endpoint
+        return moviesRepo.searchMovies(queryData: queryData);
+      }
     });
+
+final moviesByIdsProvider = FutureProvider.family<List<Movie>, List<int>>((
+  ref,
+  movieIds,
+) async {
+  final movieRepository = ref.watch(movieRepositoryProvider);
+  return movieRepository.fetchMoviesByIds(movieIds);
+});

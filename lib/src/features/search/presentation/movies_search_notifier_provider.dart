@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:movie_browser_app/src/features/movies/data/repositories/movie_repository.dart';
 
 class MoviesSearchQueryNotifier extends Notifier<String> {
   /// Used to debounce the input queries
@@ -34,7 +33,7 @@ final moviesSearchQueryNotifierProvider =
       MoviesSearchQueryNotifier.new,
     );
 
-final moviesSearchResultProvider = FutureProvider((ref) async {
-  final searchQuery = ref.watch(moviesSearchQueryNotifierProvider);
-  return ref.watch(moviesSearchProvider(searchQuery).future);
-});
+// final moviesSearchResultProvider = FutureProvider((ref) async {
+//   final searchQuery = ref.watch(moviesSearchQueryNotifierProvider);
+//   return ref.watch(moviesSearchProvider(searchQuery).future);
+// });
